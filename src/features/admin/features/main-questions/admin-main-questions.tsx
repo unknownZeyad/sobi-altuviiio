@@ -37,7 +37,6 @@ export function AdminMainQuestions() {
   const { currentQuestion, answerResult } = useAdminData();
   const { socket } = useAdminSocket();
   const [showDrawVideo, setShowDrawVideo] = useState(false);
-  const [drawVideoEnded, setDrawVideoEnded] = useState(false);
   const { playAudio, stopAudio } = useAudio()
 
   useLayoutEffect(() => {
@@ -50,7 +49,6 @@ export function AdminMainQuestions() {
 
   const handleUnholdDraw = () => {
     socket?.send(JSON.stringify({ event: "unhold_play_draw" }));
-    setDrawVideoEnded(true);
     setShowDrawVideo(false);
   };
 
@@ -60,7 +58,7 @@ export function AdminMainQuestions() {
     const handleMessage = (event: MessageEvent) => {
       const parsed = parse<ServerAdminMessage>(event.data);
       if (parsed.event === "play_draw") {
-        flushSync(() => stopAudio())
+        stopAudio()
         setShowDrawVideo(true);
       }
     };
@@ -94,7 +92,6 @@ export function AdminMainQuestions() {
               className="w-full h-full object-cover"
               autoPlay
               playsInline
-              onEnded={() => setDrawVideoEnded(true)}
             />
             {/* {drawVideoEnded && ( */}
             <GameButton

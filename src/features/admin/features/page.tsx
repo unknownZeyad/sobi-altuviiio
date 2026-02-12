@@ -36,7 +36,7 @@ export default function Admin() {
 
   return (
     <div className="w-full h-screen bg-black relative">
-      <AnimatePresence mode="wait">
+      <AnimatePresence mode="sync">
         {phase === "start_experience" && (
           <StartExperince key="start_experience" />
         )}

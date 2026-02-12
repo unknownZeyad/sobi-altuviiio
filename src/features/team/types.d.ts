@@ -123,4 +123,7 @@ declare type ServerTeamMessage =
       question_id: number,
       answer_id: number
     }
+  } | {
+    event: 'unhold_draw',
+    data: null
   }

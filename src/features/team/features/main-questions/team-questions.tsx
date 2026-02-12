@@ -18,13 +18,11 @@ import { HoldDialog } from "./hold-dialog";
 import { parse } from "@/core/lib/utils";
 
 
-
 export function TeamMainQuestions() {
   const { teamInfo, setTeamInfo, questions, setQuestions } = useTeamInfo();
   const { main_question, unavailable_questions } = teamInfo;
   const { socket } = useTeamSocket();
   const [magicCardUsed, setMagicCardUsed] = useState(false);
-  const [showDrawVideo, setShowDrawVideo] = useState(false);
 
   useEffect(() => {
     setMagicCardUsed(teamInfo.used_magic_card)
@@ -141,24 +139,6 @@ export function TeamMainQuestions() {
     });
   }
 
-  useEffect(() => {
-    if (!socket) return;
-
-    const handleMessage = (event: MessageEvent) => {
-      const parsed = parse<ServerAdminMessage>(event.data);
-      if (parsed.event === "play_draw") {
-        setShowDrawVideo(true);
-      }
-      if (parsed.event === "unhold_draw") {
-        setShowDrawVideo(false);
-      }
-    };
-
-    socket.addEventListener("message", handleMessage);
-    return () => socket.removeEventListener("message", handleMessage);
-  }, [socket]);
-
-
   function handleMagicCard() {
     if (magicCardUsed) return;
     if (currentQuestion?.hasTimedOut) return;
@@ -234,7 +214,6 @@ export function TeamMainQuestions() {
   return (
     <EnterExit>
       {main_question?.hold && <HoldDialog />}
-      {showDrawVideo && <HoldDialog />}
       <ContentLayout personSrc="/assets/images/person.png">
         <div className="flex flex-col items-end gap-4">
           <PhaseCard>

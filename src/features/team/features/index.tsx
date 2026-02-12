@@ -16,6 +16,7 @@ import TeamSpeedIntro from "./speed-question/speed-intro";
 import { useAudio } from "@/core/providers/audio-provider";
 import Draw from "./draw/draw";
 import { useTeamInfo } from "../providers/info-provider";
+import { HoldDialog } from "./main-questions/hold-dialog";
 
 export default function Team() {
     const { setTeamInfo, setQuestions, teamInfo } = useTeamInfo()
@@ -25,6 +26,7 @@ export default function Team() {
     const [clubs, setClubs] = useState<Club[] | null>(null);
     const [hold, setHold] = useState(false);
     const [otherTeamClub, setOtherTeamClub] = useState<number | null>(null);
+    const [showDrawVideo, setShowDrawVideo] = useState(false);
 
     const { phase, setPhase } = useTeamPhases();
     const { socket } = useTeamSocket();
@@ -60,6 +62,13 @@ export default function Team() {
                 setTimeout(() => {
                     window.location.reload();
                 }, 1000);
+            }
+
+            if (parsed.event === "play_draw") {
+                setShowDrawVideo(true);
+            }
+            if (parsed.event === "unhold_draw") {
+                setShowDrawVideo(false);
             }
 
 
@@ -164,6 +173,7 @@ export default function Team() {
     return (
         <div className="w-full h-screen bg-black">
             <AnimatePresence mode="wait">
+                {showDrawVideo && <HoldDialog />}
                 {phase === "wating" && <Wating key="wating" />}
                 {phase === "welcome" && <Welcomes key="welcomes" />}
                 {phase === "speed_intro" && <TeamSpeedIntro key="speed_intro" />}

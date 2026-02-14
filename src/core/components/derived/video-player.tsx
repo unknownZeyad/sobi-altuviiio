@@ -160,7 +160,6 @@ const VideoPlayer: React.FC<Props> = ({ src, ...props }) => {
       <video
         {...props}
         src={url}
-        controls
       >
         Your browser does not support the video tag.
       </video>

@@ -36,7 +36,7 @@ export default function Admin() {
   console.log(phase)
   return (
     <div className="w-full h-screen bg-black relative">
-      <AnimatePresence mode="sync">
+      <AnimatePresence mode="wait">
         {(() => {
           switch (phase) {
             case "start_experience":

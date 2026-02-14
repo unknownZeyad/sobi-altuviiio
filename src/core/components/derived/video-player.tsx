@@ -78,6 +78,7 @@ const VideoPlayer: React.FC<Props> = ({ src, ...props }) => {
       }
 
       try {
+        // Keep loading=true during entire DB operation
         setLoading(true);
 
         const db = await openDatabase();
@@ -96,10 +97,12 @@ const VideoPlayer: React.FC<Props> = ({ src, ...props }) => {
           // Start caching in background
           fetchAndCacheVideo(url);
         }
+
+        // Only set loading=false after entire operation completes
+        setLoading(false);
       } catch (err) {
         console.error('Error checking cache:', err);
         setUseCache(false);
-      } finally {
         setLoading(false);
       }
     };
@@ -114,7 +117,7 @@ const VideoPlayer: React.FC<Props> = ({ src, ...props }) => {
     };
   }, [url, videoSrc]);
 
-  // Return null while checking IndexedDB
+  // Return null while checking IndexedDB (during DB connection and retrieval)
   if (loading) {
     return null;
   }
@@ -126,7 +129,6 @@ const VideoPlayer: React.FC<Props> = ({ src, ...props }) => {
         {...props}
         src={videoSrc}
         controls
-        className="w-full rounded-lg shadow-lg"
       >
         Your browser does not support the video tag.
       </video>
@@ -139,7 +141,6 @@ const VideoPlayer: React.FC<Props> = ({ src, ...props }) => {
       {...props}
       src={url}
       controls
-      className="w-full rounded-lg shadow-lg"
     >
       Your browser does not support the video tag.
     </video>
